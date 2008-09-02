@@ -184,7 +184,7 @@ public class SecurityChallenge {
 }
 }}}
 
-=== SignAndVerify ===
+=== Sign And Verify ===
 The sign and verify sample application shows how easy it is to sign data. This data can be text as well as binary data, as long as it can be represented in a byte array. Since different certificates on the e-ID card can be used to sign and verify data, the choice can be made by the user. It is however important to note that the data must be verified by the public key of the same certificate. After the signature has been made, the signature is verified against it's data.
 
 {{{
