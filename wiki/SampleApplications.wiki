@@ -93,12 +93,6 @@ import be.belgium.eid.exceptions.EIDException;
 
 public class InformationRetrieval {
 
-	/**
-	 * Main program that prints all the info.
-	 * 
-	 * @param args
-	 *            no argument need to be given
-	 */
 	public static void main(String[] args) {
 		// Load the eID
 		try {
