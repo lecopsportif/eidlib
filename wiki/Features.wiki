@@ -1,4 +1,3 @@
-== Features ==
 === Coding style ===
 The coding style uses exceptions and event handlers and is emphasized to be as object-oriented as possible. This is unlike the current middleware, which uses error codes instead of exceptions. Read data is also stored in objects, and everything feels very familiar to Java programmers.
 Another improvement compared to the current middleware is that applications are not bound to the usage of Qt. Sometimes in the original middleware, a dialog box is shown to ask the user for confirmation. Since this strongly limits the user in certain choices (can’t use the middleware in a non-graphical environment, user cannot do anything else than to show the dialog box), our e-ID library doesn’t contain these disadvantages.
