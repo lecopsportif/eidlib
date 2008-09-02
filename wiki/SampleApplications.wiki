@@ -23,64 +23,62 @@ import be.belgium.eid.event.CardAdapter;
 import be.belgium.eid.exceptions.EIDException;
 
 public class AgeCheck {
-    
-    public static void main(String[] args) {
-        // The first and only argument that the program should receive is the age to verify
-        if (args.length != 1) {
-            System.err.println("AgeChecker -- Invalid number of arguments.");
-        } else {
-            try {
-                final Long ageToCheck = Long.parseLong(args[0]);    // Age to verify
-                if (ageToCheck < 0) {
-                    System.err.println("AgeChecker -- Given argument should be a positive value.");
-                } else {    
-                    // Load the eID 
-                    final BeID eID = new BeID(false);    // We don't allow test cards to verify their age
-                    eID.enableCardListener(new CardAdapter() {
-                        public void cardInserted() {
-                            // We now check the age
-                            try {
-                                // Fetch birth date inserted card
-                                Date birthdate = eID.getIDData().getBirthDate();
+	
+	public static void main(String[] args) {
+		// The first and only argument that the program should receive is the age to verify
+		if (args.length != 1) {
+			System.err.println("AgeChecker -- Invalid number of arguments.");
+		} else {
+			try {
+				final Long ageToCheck = Long.parseLong(args[0]);	// Age to verify
+				if (ageToCheck < 0) {
+					System.err.println("AgeChecker -- Given argument should be a positive value.");
+				} else {	
+					// Load the eID 
+					final BeID eID = new BeID(false);	// We don't allow test cards to verify their age
+					eID.enableCardListener(new CardAdapter() {
+						public void cardInserted() {
+							// We now check the age
+							try {
+								// Fetch birth date inserted card
+								Date birthdate = eID.getIDData().getBirthDate();
 
-                                // Calculate what the upperbound of the birthdate is
-                                // (We ignore Leap Years)
-                                long timeBeforeNow = ageToCheck * 365 /* DAYS A YEAR      */ 
-                                        * 24 /* HOURS A DAY */ * 60 /* MINUTES PER HOUR */
-                                        * 60 /* SEC/MINUTE */ * 1000;
-                                Date upperbound = new Date();
-                                upperbound.setTime(upperbound.getTime() - timeBeforeNow);
-                                
-                                // Check age
-                                if (birthdate.after(upperbound)) {
-                                    System.out.println("AgeChecker -- Too young.");
-                                } else {
-                                    System.out.println("AgeChecker -- OK.");
-                                }
-                            } catch (EIDException e) {
-                                e.printStackTrace(); 
-                                System.err.println("AgeChecker eIDException: -- " + e.getMessage());
-                            } catch (Exception e) {
-                                System.err.println("AgeChecker exception: -- " + e.getMessage());
-                            }
-                            
-                        }
-                    }, 1000);
-                    
-                    // Keep on checking ages until QUIT is typed or process is ended
-                    System.out.println("AgeChecker -- type QUIT to end program.");
-                    String input = "";
-                    while (!input.equalsIgnoreCase("QUIT")) {
-                        input = new Scanner(System.in).next();
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("AgeChecker -- Given argument should be an integral value.");
-            } catch (EIDException e) {
-                System.err.println("AgeChecker eIDException -- " + e.getMessage());
-            }
-        }
-    }
+								// Calculate what the upperbound of the birthdate is
+								// (We ignore Leap Years)
+								long timeBeforeNow = ageToCheck * 365 /* DAYS A YEAR */ 
+										* 24 /* HOURS A DAY */ * 60 /* MINUTES PER HOUR */
+										* 60 /* SEC/MINUTE */ * 1000;
+								Date upperbound = new Date();
+								upperbound.setTime(upperbound.getTime() - timeBeforeNow);
+								
+								// Check age
+								if (birthdate.after(upperbound)) {
+									System.out.println("AgeChecker -- Too young.");
+								} else {
+									System.out.println("AgeChecker -- OK.");
+								}
+							} catch (EIDException e) {
+								e.printStackTrace(); 
+								System.err.println("AgeChecker eIDException: -- " + e.getMessage());
+							} catch (Exception e) {
+								System.err.println("AgeChecker exception: -- " + e.getMessage());
+							}
+							
+						}
+					});
+					
+					// Keep on checking ages until QUIT is typed or process is ended
+					System.out.println("AgeChecker -- type QUIT to end program.");
+					String input = "";
+					while (!input.equalsIgnoreCase("QUIT")) {
+						input = new Scanner(System.in).next();
+					}
+				}
+			} catch (NumberFormatException e) {
+				System.err.println("AgeChecker -- Given argument should be an integral value.");
+			}
+		}
+	}
 }
 }}}
 
@@ -95,25 +93,32 @@ import be.belgium.eid.exceptions.EIDException;
 
 public class InformationRetrieval {
 
-    public static void main(String[] args) {
-        // Load the eID
-        try {
-            BeID eID = new BeID(true); // We allow information to be fetched from test cards
-            
-            // We fetch the information
-            System.out.println("InformationRetrieval -- ID information:");
-            System.out.println(eID.getIDData().toString());
-            System.out.println("InformationRetrieval -- Address information:");
-            System.out.println(eID.getIDAddress().toString());
-            System.out.println("InformationRetrieval -- Photo is saved to file:");
-            eID.getIDPhoto().writeToFile(eID.getIDData().getName());
-        } catch (EIDException e) {
-            System.err.println("InformationRetrieval eIDException -- " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("InformationRetrieval exception -- " + e.getMessage());
-        }
-    }
+	/**
+	 * Main program that prints all the info.
+	 * 
+	 * @param args
+	 *            no argument need to be given
+	 */
+	public static void main(String[] args) {
+		// Load the eID
+		try {
+			BeID eID = new BeID(true); // We allow information to be fetched from test cards
+			
+			// We fetch the information
+			System.out.println("InformationRetrieval -- ID information:");
+			System.out.println(eID.getIDData().toString());
+			System.out.println("InformationRetrieval -- Address information:");
+			System.out.println(eID.getIDAddress().toString());
+			System.out.println("InformationRetrieval -- Photo is saved to file:");
+			eID.getIDPhoto().writeToFile(eID.getIDData().getName());
+		} catch (EIDException e) {
+			System.err.println("InformationRetrieval eIDException -- " + e.getMessage());
+		} catch (Exception e) {
+			System.err.println("InformationRetrieval exception -- " + e.getMessage());
+		}
+	}
 }
+
 }}}
 
 === Security challenge ===
@@ -121,6 +126,8 @@ In our daily computer activities we need passwords all the time. Although it is 
 package be.belgium.eid.samples;
 
 {{{
+package be.belgium.eid.samples;
+
 import be.belgium.eid.eidcommon.ByteConverter;
 import be.belgium.eid.eidlib.BeID;
 import be.belgium.eid.exceptions.EIDException;
@@ -129,56 +136,57 @@ import be.belgium.eid.security.RNCertificate;
 
 public class SecurityChallenge {
 
-    public static void main(String[] args) {
-        // Load the eID
-        try {
-            BeID eID = new BeID(false); // We don't allow test cards since they
-                                        // could generate equal responses for 
-                                        // different people and thus defeat security
-            
-            // First we need to pay attention to forgery so we check the validity
-            CertificateChain certChain = eID.getCertificateChain();
-            RNCertificate rnCert = eID.getNationalRegisterCertificate();
-            System.out.println("Checking certificate validity... ");
-            if (eID.verifyOCSP(certChain) && eID.verifyCRL(certChain, rnCert, "")) {
-                System.out.println("SecurityChallenge -- certificates validated OK.");
-                
-                // Parse the arguments and process
-                if (args.length == 0) {
-                    // Generate challenge and response when no arguments are given
-                    char[] challenge = eID.getChallenge();
-                    char[] challengeResponse = eID.getChallengeResponse(challenge);
-    
-                    // Print challenge and response
-                    System.out.println("Challenge: "
-                            + ByteConverter.hexify(challenge));
-                    System.out.println("Challenge response: "
-                            + ByteConverter.hexify(challengeResponse));
-                } else {
-                    // For each given challenge, generate response and print
-                    // information
-                    for (int i = 0; i < args.length; i++) {
-                        char[] challenge = ByteConverter.unhexify(args[i]);
-                        char[] challengeResponse = eID
-                                .getChallengeResponse(challenge);
-    
-                        System.out.println("For challenge " + args[i]
-                                + ", the response is: "
-                                + ByteConverter.hexify(challengeResponse));
-    
-                    }
-                }
-            } else {
-                System.out.println("SecurityChallenge -- certificates were invalid or revoked.");
-            }
-        } catch (EIDException e) {
-            System.err.println("SecurityChallenge eIDException -- "
-                    + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("SecurityChallenge exception -- "
-                    + e.getMessage());
-        }
-    }
+	public static void main(String[] args) {
+		// Load the eID
+		try {
+			BeID eID = new BeID(false); // We don't allow test cards since they
+										// could generate equal responses for 
+										// different people and thus defeat security
+			
+			// First we need to pay attention to forgery so we check the validity
+			CertificateChain certChain = eID.getCertificateChain();
+			RNCertificate rnCert = eID.getNationalRegisterCertificate();
+			System.out.println("Checking certificate validity... ");
+			if (eID.verifyOCSP(certChain) && eID.verifyCRL(certChain, rnCert)) {
+				System.out.println("SecurityChallenge -- certificates validated OK.");
+				
+				// Parse the arguments and process
+				if (args.length == 0) {
+					// Generate challenge and response when no arguments are given
+					byte[] challenge = eID.getChallenge();
+					byte[] challengeResponse = eID.getChallengeResponse(challenge);
+	
+					// Print challenge and response
+					System.out.println("Challenge: "
+							+ ByteConverter.hexify(challenge));
+					System.out.println("Challenge response: "
+							+ ByteConverter.hexify(challengeResponse));
+				} else {
+					// For each given challenge, generate response and print
+					// information
+					for (int i = 0; i < args.length; i++) {
+						byte[] challenge = ByteConverter.unhexify(args[i]);
+						byte[] challengeResponse = eID
+								.getChallengeResponse(challenge);
+	
+						System.out.println("For challenge " + args[i]
+								+ ", the response is: "
+								+ ByteConverter.hexify(challengeResponse));
+	
+					}
+				}
+			} else {
+				System.out.println("SecurityChallenge -- certificates were invalid or revoked.");
+			}
+		} catch (EIDException e) {
+			System.err.println("SecurityChallenge eIDException -- "
+					+ e.getMessage());
+		} catch (Exception e) {
+			System.err.println("SecurityChallenge exception -- "
+					+ e.getMessage());
+		}
+	}
+
 }
 }}}
 
@@ -186,4 +194,46 @@ public class SecurityChallenge {
 The sign and verify sample application shows how easy it is to sign data. This data can be text as well as binary data, as long as it can be represented in a byte array. Since different certificates on the e-ID card can be used to sign and verify data, the choice can be made by the user. It is however important to note that the data must be verified by the public key of the same certificate. After the signature has been made, the signature is verified against it's data.
 
 {{{
+package be.belgium.eid.samples;
+
+import be.belgium.eid.eidcommon.ByteConverter;
+import be.belgium.eid.eidlib.BeID;
+import be.belgium.eid.eidlib.BeID.SignatureType;
+import be.belgium.eid.exceptions.EIDException;
+
+public class SignAndVerify {
+
+	/**
+	 * Main program that signs and verifies the data
+	 * 
+	 * @param args
+	 *            1 argument needs to be given: the PIN code. This is needed to
+	 *            generate the signature
+	 */
+	public static void main(String[] args) {
+		// The first and only argument that the program should receive is the
+		// age to verify
+		if (args.length != 1) {
+			System.err.println("SignAndVerify -- Invalid number of arguments.");
+		} else {
+			final String textToSign = "And still no Java 6 for Mac OS X...";
+
+			// Load the eID
+			try {
+				final BeID eID = new BeID(false); // We don't allow test cards
+				byte[] signature = eID.generateSignature(textToSign.getBytes(),
+						args[0], SignatureType.AUTHENTICATIONSIG);
+				System.out.println("Signature: "
+						+ ByteConverter.hexify(signature));
+				System.out.println("Verification succeeded: "
+						+ eID.verifySignature(textToSign.getBytes(), signature,
+								SignatureType.AUTHENTICATIONSIG));
+			} catch (EIDException e) {
+				System.err.println("SignAndVerify -- EIDException: "
+						+ e.getMessage());
+			}
+		}
+	}
+}
+
 }}}
