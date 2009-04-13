@@ -426,7 +426,7 @@ public class SmartCard {
 		// TODO Avoid an error to occur because transmission is reassured to be
 		// complete. Kind of stupid actually but it is not my fault.
 		try {
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			// Ignore
 		}
