@@ -56,6 +56,7 @@ import be.belgium.eid.security.Certificate;
 import be.belgium.eid.security.CertificateChain;
 import be.belgium.eid.security.CertificateStatus;
 import be.belgium.eid.security.HardCodedRootCertificate;
+import be.belgium.eid.security.HardCodedRootCertificateV2;
 import be.belgium.eid.security.OCSPClient;
 import be.belgium.eid.security.RNCertificate;
 
@@ -688,9 +689,12 @@ public class BeID extends SmartCard {
 			return true;
 		} else {
 			// Verify the root certificate
-			final HardCodedRootCertificate cert = new HardCodedRootCertificate();
-			if (this.getCertificateChain().getRootCert().getX509Certificate()
-					.equals(cert.getX509Certificate())) {
+		    final Certificate root = getCertificateChain().getRootCert();
+			final Certificate cert = new HardCodedRootCertificate();
+			final Certificate certV2 = new HardCodedRootCertificateV2();
+
+			if (root.getX509Certificate().equals(cert.getX509Certificate()) ||
+			        root.getX509Certificate().equals(certV2.getX509Certificate())) {
 				return true;
 			} else {
 				this.getCertificateChain().getRootCert().setStatus(
