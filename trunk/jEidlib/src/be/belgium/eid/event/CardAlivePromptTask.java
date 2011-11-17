@@ -33,6 +33,12 @@ import be.belgium.eid.eidlib.SmartCard;
  * @version 1.0.0 11 Feb 2008
  */
 public class CardAlivePromptTask extends Thread {
+	
+	/** Lock time to wait for card removal */
+	public static long fsWaitCardAbsent = 500;
+
+	/** Lock time to wait for card insertion */
+	public static long fsWaitCardPresent = 500;
 
 	/**
 	 * Contains the card reader to use to prompt whether the card is in the
@@ -74,14 +80,14 @@ public class CardAlivePromptTask extends Thread {
 				if (!fCard.isConnected()) {
 					// Wait for a card to be present on each terminal
 					for (CardTerminal ct : SmartCard.getSmartCardReaders()) {
-						if (ct.waitForCardPresent(500)) {
+						if (ct.waitForCardPresent(fsWaitCardPresent)) {
 							fCard.connectCard(ct.getName());
 							fCardListener.cardInserted();
 							break;
 						}
 					}	
 				} else {
-					fCard.getConnectedReader().waitForCardAbsent(0);
+					fCard.getConnectedReader().waitForCardAbsent(fsWaitCardAbsent);
 					fCard.disconnect();
 					fCardListener.cardRemoved();
 				}

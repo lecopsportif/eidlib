@@ -163,7 +163,7 @@ public class FormattedTLV extends TLV {
 			replacements.put("MEI", "MAY");
 			replacements.put("MAI", "MAY");
 			replacements.put("JUIN", "JUN");
-			replacements.put("JUIL", "JUN");
+			replacements.put("JUIL", "JUL");
 			replacements.put("AOUT", "AUG");
 			replacements.put("SEPT", "SEP");
 			replacements.put("OKT", "OCT");
