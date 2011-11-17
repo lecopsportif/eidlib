@@ -87,9 +87,10 @@ public class CardAlivePromptTask extends Thread {
 						}
 					}	
 				} else {
-					fCard.getConnectedReader().waitForCardAbsent(fsWaitCardAbsent);
-					fCard.disconnect();
-					fCardListener.cardRemoved();
+					if (fCard.getConnectedReader().waitForCardAbsent(fsWaitCardAbsent)) {
+						fCard.disconnect();
+						fCardListener.cardRemoved();
+					}
 				}
 			} catch (Exception e) {
 				// TODO Ignore
