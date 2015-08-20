@@ -1,0 +1,28 @@
+### Coding style ###
+The coding style uses exceptions and event handlers and is emphasized to be as object-oriented as possible. This is unlike the current middleware, which uses error codes instead of exceptions. Read data is also stored in objects, and everything feels very familiar to Java programmers.
+Another improvement compared to the current middleware is that applications are not bound to the usage of Qt. Sometimes in the original middleware, a dialog box is shown to ask the user for confirmation. Since this strongly limits the user in certain choices (can’t use the middleware in a non-graphical environment, user cannot do anything else than to show the dialog box), our e-ID library doesn’t contain these disadvantages.
+Documentation
+
+The written code is very well documented and a very extensive Javadoc documentation is provided to improve the usability of the library greatly compared to the original library. It also allows code to be modified much more easily. This was and is one of the most important parts of the e-ID library: that the documentation was clear enough for non-domain experts in the area of smart cards or e-ID cards to be able to use the library without problems. This Javadoc documentation can be found on the website of the project: http://fenix.cmi.ua.ac.be/~p051392. There you need to follow the link of Javadoc.
+
+### Native Java ###
+Since Java 1.6, Java contains a basic API for sending APDU commands to smart card readers. This causes the installation of the library to be extremely easy since any JRE >= 6 is sufficient.
+Our e-ID library also uses the security API from Sun which is a standard in the Java API. Compared to the current middleware, which uses OpenSSL, the code produced by the Java API is very elegant and object-oriented.
+
+### Extended functionality for read objects ###
+The read data from the smart card is stored in objects. These objects can contain extended usages above just being a container of data. For example the object in which the picture of the holder of the e-ID card is stored is able to store this image as a JPEG file on the file system, retrieve this photo as a Java AWT image or retrieve the byte stream of which the image is composed.
+
+### CRL and OCSP verification ###
+The contents on the e-ID card can be verified for validity by CRL’s (Certificate Revocation Lists) or by OCSP (Online Certificate Status Protocol). In this way, a host application can verify the certificates to see whether the e-ID card is valid (note however that an internet connection needs to be present for this to be possible).
+
+### Automatic validation of the retrieved data ###
+When data is retrieved from the e-ID card, it is automatically verified against it’s national register certificate (if the data is the ID or the address) or against it’s hash (if the data is the picture of the holder). The root certificate is also verified automatically, note however that the root certificate of test cards is invalid, this is the reason why the main interface contains a configuration parameter indicating whether test cards are allowed, when this is set to true, the root certificate is not verified. Finally the signatures are automatically verified.
+
+### Support for several types of applications ###
+In my opinion, there are two important types of applications that want to use the e-ID library: applications whose purpose it is to perform operations on the currently inserted e-ID and applications whose execution solely depends on the insertion and removal of smart cards.
+
+In the first type of application, the application initializes the e-ID library and performs the operations at a determined point in it’s execution. For example, imagine that we have an application, which requires authentication. The application then at a certain point assumes that the e-ID card of the user is inserted, so it then reads the data. If the e-ID card is not inserted at that time an error of some sort will be shown.
+In the second type of application, the application starts and constructs the e-ID library. It doesn’t however assume that a valid e-ID card is entered (this could be possible, but not necessarily). The application would be requires the e-ID functionality for a much longer time. Thus the application needs to determine when a smart card is inserted or removed by some sort of polling system. Since these polling systems inherently result in ugly and repetitive code, our e-ID library has a polling system built in by using Java event handlers. So what needs to be done by our application is to define what needs to be done when inserting the smart card and what needs to be done when removing the smart card (just like when defining for example Action listeners for a Swing application). Image for example that we have an application to check the age of certain person (this is a sample application that is provided with the library, so I would like to refer to that if this text is not so clear), we just need to construct the e-ID interface and then enable the card listener by defining the necessary operation as indicated above. When the card is inserted we would then like to retrieve the birth date of the cardholder and check whether it is before the required birth date. When the card is removed, nothing needs to be done except perhaps some cleaning up.
+
+### Signing and verification of data ###
+The library provides an easy way to sign and verify data for the different certificates on the e-ID card. Anyone can know sign data that can be verified by the receiver to assure that the data sent was really yours.
